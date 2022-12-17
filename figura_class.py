@@ -8,6 +8,9 @@ class Pelota:
         self.color = color
         self.vx = vx
         self.vy = vy
+        self.contadorDerecha = 0
+        self.contadorIzquierda = 0
+        self.font = pg.font.Font (None, 40)#marcador
 
     def dibujar(self,pantalla):
         pg.draw.circle(pantalla,self.color,(self.pos_x,self.pos_y),self.radio)
@@ -15,23 +18,75 @@ class Pelota:
     def mover(self,x_max=800,y_max=600):
         self.pos_x += self.vx
         self.pos_y += self.vy
-        #cambiamos para que si se marca gol a un lado salga exactamante
-        #en el sentido contrario rebotando
-        
-        if self.pos_y >= y_max- self.radio or self.pos_y < self.radio:
-            self.vy = self.vy*-1
 
+        print("posicion x:", self.pos_x + self.radio)
+        print("posicion y:",self.pos_y + self.radio)
+
+        if self.pos_y >= y_max - self.radio or self.pos_y < 0 + self.radio:
+            self.vy *= -1
+        #objetivo que la pelota desaparezcaen los limites y vuelva a aparecer rebotando
+        #hacia el lado que vino
+        if self.pos_x >= x_max + self.radio*10:#limite derecha 
+            #contar el gol
+            self.contadorIzquierda +=1
+            self.vx *= -1 
+            self.vy *= -1
+
+        if self.pos_x < 0 - self.radio*10:#limite izquierdo
+            self.contadorDerecha +=1
+            self.vx *= -1 
+            self.vy *= -1
+
+    def marcador(self,pantalla_principal):     
+            marcadorIzquierdo = self.font.render(str(self.contadorDerecha),0,(255,255,0))
+            marcadorDerecho = self.font.render(str(self.contadorIzquierda),0,(255,255,0))
+            pantalla_principal.blit(marcadorDerecho, (200,50))#marcador
+            pantalla_principal.blit(marcadorIzquierdo, (600,50))#marcador
+
+    def posicionX(self):
+        return self.pos_x+self.radio
+    
+    def posicionY(self):
+        return self.pos_y+self.radio
+
+    def izquierda(self):
+        if self.pos_x < 400:
+            return True
+        return False
+
+    def derecha(self):
+        if self.pos_y > 400:
+            return True
+        return False
+
+    def arriba(self):
+        if self.pos_y < 300:
+            return True
+        return False
+
+    def abajo(self):
+        if self.pos_y > 300:
+            return True
+        return False
+
+    '''
+        if self.pos_x >= x_max - self.radio or self.pos_x < 0 + self.radio:
+            self.vx *= -1
+        if self.pos_y >= y_max - self.radio or self.pos_y < 0 + self.radio:
+            self.vy *= -1
+        
+        
         if self.pos_x >= x_max or self.pos_x<0:
             self.pos_x = x_max//2
             self.pos_y = y_max//2
 
             self.vy *= -1
             self.vx *= -1
-        
+    '''
 
 
 class Raqueta:
-     def __init__(self,pos_x,pos_y,w=20,h=100,color=(255,255,255),vx=1,vy=1):
+    def __init__(self,pos_x,pos_y,w=20,h=100,color=(255,255,255),vx=1,vy=1):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.w = w
@@ -40,11 +95,11 @@ class Raqueta:
         self.vx = vx
         self.vy = vy
 
-     def dibujar(self,pantalla):
+    def dibujar(self,pantalla):
         pg.draw.rect(pantalla,self.color,(self.pos_x-(self.w//2),self.pos_y-(self.h//2),self.w,self.h))  
 
 
-     def mover(self,tecla_arriba,tecla_abajo,y_max=600,y_min=0):
+    def mover(self,tecla_arriba,tecla_abajo,y_max=600,y_min=0):
         estado_teclas = pg.key.get_pressed()#movimiento raquetas
 
         if estado_teclas[tecla_arriba] == True and self.pos_y > (y_min+self.h//2):
