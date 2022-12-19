@@ -15,18 +15,18 @@ class Pelota:
     def dibujar(self,pantalla):
         pg.draw.circle(pantalla,self.color,(self.pos_x,self.pos_y),self.radio)
 
-    def mover(self,x_max=800,y_max=600):
+    def mover(self,y_max=600,x_max=800):
         self.pos_x += self.vx
         self.pos_y += self.vy
 
         print("posicion x:", self.pos_x + self.radio)
         print("posicion y:",self.pos_y + self.radio)
 
-        if self.pos_y >= y_max - self.radio or self.pos_y < 0 + self.radio:
+        if self.pos_y >= y_max-self.radio or self.pos_y < 0+self.radio:
             self.vy *= -1
         #objetivo que la pelota desaparezcaen los limites y vuelva a aparecer rebotando
         #hacia el lado que vino
-        if self.pos_x >= x_max + self.radio*10:#limite derecha 
+        if self.pos_x >= x_max+self.radio*10:#limite derecha 
             #contar el gol
             self.contadorIzquierda +=1
             self.vx *= -1 
@@ -43,6 +43,19 @@ class Pelota:
             pantalla_principal.blit(marcadorDerecho, (200,50))#marcador
             pantalla_principal.blit(marcadorIzquierdo, (600,50))#marcador
 
+    @property#con property evitamos pasar los datos entre parentesis
+    def derecha(self):
+        return self.pos_x + self.radio
+    @property
+    def izquierda(self):
+        return self.pos_x - self.radio
+    @property
+    def arriba(self):
+        return self.pos_y - self.radio
+    @property
+    def abajo(self):
+        return self.pos_y + self.radio
+    """
     def posicionX(self):
         return self.pos_x+self.radio
     
@@ -68,7 +81,7 @@ class Pelota:
         if self.pos_y > 300:
             return True
         return False
-
+    """
     '''
         if self.pos_x >= x_max - self.radio or self.pos_x < 0 + self.radio:
             self.vx *= -1
@@ -106,3 +119,19 @@ class Raqueta:
            self.pos_y -= 1
         if estado_teclas[tecla_abajo] == True and self.pos_y < (y_max -self.h//2):
            self.pos_y += 1
+
+    @property
+    def arriba(self):
+        return self.pos_y - self.h//2
+   
+    @property
+    def abajo(self):
+        return self.pos_y + self.h//2
+
+    @property
+    def izquierda(self):
+        return self.pos_x - self.w//2
+
+    @property
+    def derecha(self):
+        return self.pos_x + self.w//2
