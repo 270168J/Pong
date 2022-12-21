@@ -1,35 +1,30 @@
-from figura_class import Pelota,Raqueta
 import pygame as pg
+from figura_class import Pelota,Raqueta
 
-pg.init()#pantalla principal en bucle hata el game_over
-pantalla_principal = pg.display.set_mode((800,600))
-pg.display.set_caption("Pong")
+ANCHO = 800
+ALTO = 600
+
+class Partida:
+     def __init__(self):
+        self.pantalla_inicial = pg.display.set_mode((ANCHO,ALTO))
+        pg.display.set_caption("Pong")
+        self.tasa_refresco = pg.time.Clock()
 
 
-#font = pg.font.Font (None, 40)#marcador
-#text = font.render('Puntos:',1,(255,255,0))#marcador
+        self.pelota = Pelota(ANCHO//2,ALTO//2,vx=2,vy=2)
+        self.raqueta1 = Raqueta(5,ALTO//2,vy=5)
+        self.raqueta2 = Raqueta(ANCHO-5,ALTO//2,vy=5)
 
+     def bucle_fotograma(self):
+        game_over = False
 
-#definir la tasa de refresco de nuestro bucle de fotogramas fps=fotograma por segundo
-cronometro = pg.time.Clock()
-#objetos
-pelota = Pelota(400,300)
-raqueta1 = Raqueta(5,300)
-raqueta2 = Raqueta(795,300)
-#velocidad
-raqueta1.vx=5
-raqueta2.vy=5
-pelota.vx=1
-
-game_over = False
-
-while not game_over:
+        while not game_over:
     
-    #imprimir los milisegundos que tarda cada fotograma actualmente
-    vt = cronometro.tick(300)#vt=variable para controlar la velocidad entre fotogramas, puedes llamarlo como quieras
-    #print(vt)
-    for evento in pg.event.get():
-         if evento.type == pg.QUIT:
+         #imprimir los milisegundos que tarda cada fotograma actualmente
+         vt = cronometro.tick(300)#vt=variable para controlar la velocidad entre fotogramas, puedes llamarlo como quieras
+         #print(vt)
+         for evento in pg.event.get():
+           if evento.type == pg.QUIT:
              game_over = True 
 
 
@@ -63,4 +58,4 @@ while not game_over:
 
 
     
-    pg.display.flip()            
+    pg.display.flip()
