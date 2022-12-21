@@ -19,21 +19,29 @@ class Pelota:
         self.pos_x += self.vx
         self.pos_y += self.vy
 
-        print("posicion x:", self.pos_x + self.radio)
-        print("posicion y:",self.pos_y + self.radio)
+        #print("posicion x:", self.pos_x + self.radio)imprime la posicion en la consola
+        #print("posicion y:",self.pos_y + self.radio)imprime la posicion en la consola
 
-        if self.pos_y >= y_max-self.radio or self.pos_y < 0+self.radio:
+        if self.pos_y >= y_max-self.radio or self.pos_y < 0+self.radio:#para que rebote arriba y abajo
             self.vy *= -1
         #objetivo que la pelota desaparezcaen los limites y vuelva a aparecer rebotando
         #hacia el lado que vino
         if self.pos_x >= x_max+self.radio*10:#limite derecha 
             #contar el gol
             self.contadorIzquierda +=1
+
+            self.pos_x = x_max//2
+            self.pos_y = y_max//2
+
             self.vx *= -1 
             self.vy *= -1
 
         if self.pos_x < 0 - self.radio*10:#limite izquierdo
             self.contadorDerecha +=1
+
+            self.pos_x = x_max//2
+            self.pos_y = y_max//2
+
             self.vx *= -1 
             self.vy *= -1
 
@@ -55,6 +63,28 @@ class Pelota:
     @property
     def abajo(self):
         return self.pos_y + self.radio
+
+    def comprobar_choque(self,r1,r2):
+        if self.derecha >= r2.izquierda and \
+           self.izquierda <= r2.derecha and\
+           self.abajo >= r2.arriba and\
+           self.arriba <= r2.abajo:
+           self.vx *= -1
+
+        if self.derecha >= r1.izquierda and \
+           self.izquierda <= r1.derecha and\
+           self.abajo >= r1.arriba and\
+           self.arriba <= r1.abajo:
+           self.vx *= -1
+    def comprobar_choqueV2(self,*raquetas):
+        for r in raquetas:
+            if self.derecha >= r.izquierda and \
+               self.izquierda <= r.derecha and\
+               self.abajo >= r.arriba and\
+               self.arriba <= r.abajo:
+                    self.vx *= -1
+                    return
+
     """
     def posicionX(self):
         return self.pos_x+self.radio
