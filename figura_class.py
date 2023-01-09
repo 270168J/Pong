@@ -28,22 +28,26 @@ class Pelota:
         #hacia el lado que vino
         if self.pos_x >= x_max+self.radio*10:#limite derecha 
             #contar el gol
-            self.contadorIzquierda +=1
+            #self.contadorIzquierda +=1
 
             self.pos_x = x_max//2
             self.pos_y = y_max//2
 
             self.vx *= -1 
             self.vy *= -1
+
+            return "right"    
 
         if self.pos_x < 0 - self.radio*10:#limite izquierdo
-            self.contadorDerecha +=1
+            #self.contadorDerecha +=1
 
             self.pos_x = x_max//2
             self.pos_y = y_max//2
 
             self.vx *= -1 
             self.vy *= -1
+
+            return "left"
 
     def marcador(self,pantalla_principal):     
             marcadorIzquierdo = self.font.render(str(self.contadorDerecha),0,(255,255,0))
