@@ -8,8 +8,6 @@ class Pelota:
         self.color = color
         self.vx = vx
         self.vy = vy
-        self.contadorDerecha = 0
-        self.contadorIzquierda = 0
         self.font = pg.font.Font (None, 40)#marcador
 
     def dibujar(self,pantalla):
@@ -49,11 +47,11 @@ class Pelota:
 
             return "left"
 
-    def marcador(self,pantalla_principal):     
-            marcadorIzquierdo = self.font.render(str(self.contadorDerecha),0,(255,255,0))
-            marcadorDerecho = self.font.render(str(self.contadorIzquierda),0,(255,255,0))
-            pantalla_principal.blit(marcadorDerecho, (200,50))#marcador
-            pantalla_principal.blit(marcadorIzquierdo, (600,50))#marcador
+    #def marcador(self,pantalla_principal):     
+           #marcadorIzquierdo = self.font.render(str(self.contadorDerecha),0,(255,255,0))
+           #marcadorDerecho = self.font.render(str(self.contadorIzquierda),0,(255,255,0))
+           #pantalla_principal.blit(marcadorDerecho, (200,50))#marcador
+           #pantalla_principal.blit(marcadorIzquierdo, (600,50))#marcador
 
     @property#con property evitamos pasar los datos entre parentesis
     def derecha(self):

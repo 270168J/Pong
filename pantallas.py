@@ -5,8 +5,10 @@ ANCHO = 800
 ALTO = 600
 BLANCO = (255,255,255)
 AMARILLO = (255,255,0)
+ROJO = (255,0,0)
+NARANJA = (255,128,0)
 VERDE = (0,128,24)
-
+FPS = (280)#fotogramas por segundo
 class Partida:
      def __init__(self):
         pg.init()
@@ -19,16 +21,21 @@ class Partida:
         self.raqueta1 = Raqueta(5,ALTO//2,vy=5)
         self.raqueta2 = Raqueta(ANCHO-5,ALTO//2,vy=5)
 
-        self.font = pg.font.Font (None, 30)#marcador
+        self.font = pg.font.Font ("fonts/pressStart2.ttf", 15)#marcador
+        self.fuenteTemp = pg.font.Font("fonts/pressStart2.ttf",20)#fuente temporizador
         self.marcador1 = 0
         self.marcador2 = 0
         self.quienMarco = ""
+        self.temporizador = 15000#son milisegundos
 
      def bucle_fotograma(self):
          game_over = False        
-         while not game_over:
+         while not game_over and (self.marcador1 < 5 or self.marcador2 < 5) and self.temporizador > 0:
         
-             self.tasa_refresco.tick(300)
+             salto_tiempo = self.tasa_refresco.tick(FPS)#1000/280=fotogramas por segundo en milisegundos
+             self.temporizador -= salto_tiempo
+        
+
             
              for evento in pg.event.get():                   
                  if evento.type == pg.QUIT:
@@ -38,30 +45,23 @@ class Partida:
              self.raqueta2.mover(pg.K_UP,pg.K_DOWN)#mover raqueta2 derecha
              self.quienMarco = self.pelota.mover()#mover pelota
 
-             if self.quienMarco == "right":
-                self.marcador1 += 1
-             elif self.quienMarco == "left":
-                self.marcador2 += 1
-
-             
+            
+                         
              self.pantalla_principal.fill(VERDE)#pintado de pantalla
              self.pelota.comprobar_choqueV2(self.raqueta1,self.raqueta2)
+
              self.marcador()
+             self.linea_disc()
+
+             tiempo = self.font.render(str(int(self.temporizador/1000) ),0,ROJO)
+             self.pantalla_principal.blit(tiempo,(400, 20))
+
+             
     
               #pelota.comprobar_choque(raqueta1,raqueta2)        
               #self.pelota.comprobar_choqueV2(self.raqueta1,self.raqueta2)
              #self.pelota.marcador(self.pantalla_principal)#pintado de marcador
-             
-             cont_linea1 = 0
-             cont_linea2 = 50
-
-             while cont_linea1 <= 560 and cont_linea2 <= 630:
-
-                 pg.draw.line(self.pantalla_principal, (BLANCO), (400,cont_linea1), (400,cont_linea2), width=10)
-                 cont_linea1 += 70
-                 cont_linea2 += 70
-         
-              
+                  
              
              
              self.pelota.dibujar(self.pantalla_principal)#pintado de pelota
@@ -75,16 +75,30 @@ class Partida:
 
 
          pg.quit()
-   
+
+
+     def linea_disc(self):    
+             cont_linea1 = 0
+             cont_linea2 = 50
+
+             while cont_linea1 <= 560 and cont_linea2 <= 630:
+
+                 pg.draw.line(self.pantalla_principal, (BLANCO), (400,cont_linea1), (400,cont_linea2), width=10)
+                 cont_linea1 += 70
+                 cont_linea2 += 70
 
      def mostrar_jugador(self):
 
             jugador1 = self.font.render("jugador 1",0,AMARILLO)
             jugador2 = self.font.render("jugador 2",0,AMARILLO)
-            self.pantalla_principal.blit(jugador1, (200,30))#marcador
-            self.pantalla_principal.blit(jugador2, (600,30))#marcado
+            self.pantalla_principal.blit(jugador1, (160,30))#marcador
+            self.pantalla_principal.blit(jugador2, (565,30))#marcado
 
-     def marcador(self):     
+     def marcador(self):
+            if self.quienMarco == "right":
+                self.marcador1 += 1
+            elif self.quienMarco == "left":
+                self.marcador2 += 1 
             marcadorIzquierdo = self.font.render(str(self.marcador2),0,AMARILLO)
             marcadorDerecho = self.font.render(str(self.marcador1),0,AMARILLO)
             self.pantalla_principal.blit(marcadorDerecho, (200,50))#marcador
