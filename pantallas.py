@@ -9,6 +9,11 @@ ROJO = (255,0,0)
 NARANJA = (255,128,0)
 VERDE = (0,128,24)
 FPS = (280)#fotogramas por segundo
+PRIMER_AVISO = 10000
+SEGUNDO_AVISO = 5000
+
+
+
 class Partida:
      def __init__(self):
         pg.init()
@@ -27,10 +32,12 @@ class Partida:
         self.marcador2 = 0
         self.quienMarco = ""
         self.temporizador = 15000#son milisegundos
+        self.colorFondo = VERDE
+        self.contadorFotograma = 0
 
      def bucle_fotograma(self):
          game_over = False        
-         while not game_over and (self.marcador1 < 5 or self.marcador2 < 5) and self.temporizador > 0:
+         while not game_over and (self.marcador1 < 10 or self.marcador2 < 10) and self.temporizador > 0:
         
              salto_tiempo = self.tasa_refresco.tick(FPS)#1000/280=fotogramas por segundo en milisegundos
              self.temporizador -= salto_tiempo
@@ -44,10 +51,10 @@ class Partida:
              self.raqueta1.mover(pg.K_w,pg.K_s)#mover raqueta1 izquierda
              self.raqueta2.mover(pg.K_UP,pg.K_DOWN)#mover raqueta2 derecha
              self.quienMarco = self.pelota.mover()#mover pelota
-
-            
+             self.pantalla_principal.fill(self.fijar_fondo())#cambio de colores de fondo de aviso de final
+             
                          
-             self.pantalla_principal.fill(VERDE)#pintado de pantalla
+             #self.pantalla_principal.fill(VERDE)#pintado de pantalla
              self.pelota.comprobar_choqueV2(self.raqueta1,self.raqueta2)
 
              self.marcador()
@@ -103,4 +110,46 @@ class Partida:
             marcadorDerecho = self.font.render(str(self.marcador1),0,AMARILLO)
             self.pantalla_principal.blit(marcadorDerecho, (200,50))#marcador
             self.pantalla_principal.blit(marcadorIzquierdo, (600,50))#marcador
-             
+
+     def fijar_fondo(self):
+         self.contadorFotograma +=1
+
+         if self.temporizador > PRIMER_AVISO:#no entra de momento en ninguna condicion
+                self.contadorFotograma = 0
+
+         elif self.temporizador > SEGUNDO_AVISO:#entra en la condicion que parpadee en naranja,10 segundos
+             if self.contadorFotograma == 20:#el 20 es la velocidad del parpadeo(veces x milisegundo)
+                 if self.colorFondo == VERDE:
+                      self.colorFondo = NARANJA
+                 else:
+                      self.colorFondo = VERDE
+                 self.contadorFotograma = 0
+         else:#entra la condicion que parpadee en rojo, 5 segundos
+             if self.contadorFotograma == 20:
+                 if self.colorFondo == VERDE:
+                      self.colorFondo = ROJO
+                 else:
+                      self.colorFondo = VERDE
+                 self.contadorFotograma = 0
+
+         return self.colorFondo    
+
+
+class Menu:
+    def __init__(self):
+        pg.init()
+        self.pantalla_principal = pg.display.set_mode((ANCHO,ALTO))
+        pg.display.set_caption("Menu")
+        self.tasa_refresco = pg.time.Clock()
+
+        self.imagenFondo = pg.image.load("imagenes/portada.jpg")
+
+    def bucle_pantalla(self):
+        game_over = False
+
+        while not game_over:
+            for evento in pg.event.get():
+                if evento.type == pg.QUIT:
+                    game_over = True
+
+       
