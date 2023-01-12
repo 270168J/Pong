@@ -5,6 +5,7 @@ ANCHO = 800
 ALTO = 600
 BLANCO = (255,255,255)
 AMARILLO = (255,255,0)
+AZUL = (41, 41, 185)
 ROJO = (255,0,0)
 NARANJA = (255,128,0)
 VERDE = (0,128,24)
@@ -37,7 +38,7 @@ class Partida:
 
      def bucle_fotograma(self):
          game_over = False        
-         while not game_over and (self.marcador1 < 10 or self.marcador2 < 10) and self.temporizador > 0:
+         while not game_over and (self.marcador1 < 20 or self.marcador2 < 20) and self.temporizador > 0:
         
              salto_tiempo = self.tasa_refresco.tick(FPS)#1000/280=fotogramas por segundo en milisegundos
              self.temporizador -= salto_tiempo
@@ -143,6 +144,36 @@ class Menu:
         self.tasa_refresco = pg.time.Clock()
 
         self.imagenFondo = pg.image.load("imagenes/portada.jpg")
+        self.fuenteMenu = pg.font.Font("fonts/pressStart2.ttf", 20)
+    def bucle_pantalla(self):
+        game_over = False
+
+        while not game_over:
+            for evento in pg.event.get():
+                if evento.type == pg.QUIT:
+                    game_over = True
+
+            if evento.type == pg.KEYDOWN:
+                if evento.key == pg.K_RETURN:#enter
+                    game_over = True
+                    return "jugar"
+
+            self.pantalla_principal.blit(self.imagenFondo,(0,0))
+            menu = self.fuenteMenu.render("Pulsa ENTER para jugar",0,AZUL)
+            self.pantalla_principal.blit(menu,(150,ALTO//2))
+            pg.display.flip()
+
+
+class Resultado:
+    def __init__(self):
+        pg.init()
+        self.pantalla_principal = pg.display.set_mode((ANCHO,ALTO))
+        pg.display.set_caption("Resultado")
+        self.tasa_refresco = pg.time.Clock()
+
+        #self.imagenFondo = pg.image.load("imagenes/portada.jpg")
+        self.fuenteResultado = pg.font.Font("fonts/pressStart2.ttf", 20)
+        self.resultado = ""
 
     def bucle_pantalla(self):
         game_over = False
@@ -152,4 +183,13 @@ class Menu:
                 if evento.type == pg.QUIT:
                     game_over = True
 
-       
+            if evento.type == pg.KEYDOWN:#enter
+                if evento.key == pg.K_RETURN:#esto cierra la ventana de menu
+                    game_over = True
+                    return "jugar"#retorna
+
+            #self.pantalla_principal.blit(self.imagenFondo,(0,0))
+            self.pantalla_principal.fill(BLANCO)
+            menu = self.fuenteResultado.render("Gano Samuel",0,AZUL)
+            self.pantalla_principal.blit(menu,(150,ALTO//2))
+            pg.display.flip()
